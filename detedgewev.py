@@ -4,7 +4,7 @@ import numpy as np
 from detedge import FFilter, Range, Spectrum, Mask, lpf, hpf, bpf
 
 
-def detect_edges_wavelet(img: np.ndarray, ffilter: FFilter, r: Union[float, Range]) -> Tuple[np.ndarray, Tuple[Spectrum, Mask]]:
+def detect_edges_wavelet(img: np.ndarray, ffilter: FFilter, r: Union[float, Range], wavelet='db6') -> Tuple[np.ndarray, Tuple[Spectrum, Mask]]:
     """
     Compute wdt in the given image and filter the coefficients using the mask
     returned by ffilter function in the given radio or radio_range
@@ -19,7 +19,7 @@ def detect_edges_wavelet(img: np.ndarray, ffilter: FFilter, r: Union[float, Rang
     :return: image as numpy.array with the applied filter
     """
 
-    wdt: np.ndarray = pywt.wavedec2(np.float32(img), wavelet='db6', level=6)
+    wdt: np.ndarray = pywt.wavedec2(np.float32(img), wavelet=wavelet, level=6)
     arr, slices = pywt.coeffs_to_array(wdt)
     mask: np.ndarray = ffilter(arr, r)
     wdt_shift: np.ndarray = np.fft.fftshift(arr)
@@ -33,7 +33,7 @@ def detect_edges_wavelet(img: np.ndarray, ffilter: FFilter, r: Union[float, Rang
 
     iwdt_shift = np.fft.ifftshift(wdt_shift)
     coeff_from_arr = pywt.array_to_coeffs(iwdt_shift, slices, output_format='wavedecn')
-    wdt_rec = pywt.waverecn(coeff_from_arr, wavelet='db6')
+    wdt_rec = pywt.waverecn(coeff_from_arr, wavelet=wavelet)
     img_back = np.abs(wdt_rec)
 
     return img_back, (magnitude_spectrum, fshift_mask_mag)

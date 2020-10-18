@@ -52,25 +52,35 @@ if __name__ == '__main__':
             st.image(image=np.uint8(img_back), caption='After FFT Inverse', use_column_width=True)
     else:
         file: io.BytesIO = st.sidebar.file_uploader('Upload Photo', type=["jpg", "jpeg", "png"])
-        img: np.ndarray = np.array(Image.open(file).convert('L'))
-        st.image(image=img, caption='Input Image', use_column_width=True)
+        if file is not None:
+            img: np.ndarray = np.array(Image.open(file).convert('L'))
+            st.image(image=img, caption='Input Image', use_column_width=True)
 
-        option = st.sidebar.selectbox('Select Mask',
-                                      options=[
-                                          'low pass filter',
-                                          'high pass filter',
-                                          'band pass filter'],
-                                      index=0
-                                      )
-        if 'low pass filter' == option:
-            lpf_radio = st.sidebar.slider('low frequency radio', max_value=100., value=40., step=.01)
-            img_back, (spectrum, mask) = detect_edges_wav(img, lpf, lpf_radio * min(img.shape) / 100)
-        elif 'high pass filter' == option:
-            hpf_radio = st.sidebar.slider('high frequency radio', max_value=100., value=30., step=.01)
-            img_back, (spectrum, mask) = detect_edges_wav(img, hpf, hpf_radio * min(img.shape) / 100)
-        else:
-            rin, rout = st.sidebar.slider('band frequency radio', max_value=100., value=(10., 20.), step=.01)
-            img_back, (spectrum, mask) = detect_edges_wav(img, bpf, (rin * min(img.shape) / 100, rout * min(img.shape) / 100))
-        st.sidebar.image(image=np.uint8(spectrum), caption='After Analysis ', use_column_width=True)
-        st.sidebar.image(image=np.uint8(mask), caption='Coefficients + MASK', use_column_width=True)
-        st.image(image=np.uint8(img_back), caption='After Synthesis', use_column_width=True)
+            option = st.sidebar.selectbox('Select Mask',
+                                          options=[
+                                              'low pass filter',
+                                              'high pass filter',
+                                              'band pass filter'],
+                                          index=0
+                                          )
+            wavelet = st.sidebar.selectbox('Select Wavelet',
+                                           options=[
+                                               'db6',
+                                               'haar'],
+                                           index=0
+                                           )
+            if 'low pass filter' == option:
+                lpf_radio = st.sidebar.slider('low frequency radio', max_value=100., value=40., step=.01)
+                img_back, (spectrum, mask) = detect_edges_wav(img, lpf, lpf_radio * min(img.shape) / 100)
+            elif 'high pass filter' == option:
+                hpf_radio = st.sidebar.slider('high frequency radio', max_value=100., value=30., step=.01)
+                img_back, (spectrum, mask) = detect_edges_wav(img, hpf, hpf_radio * min(img.shape) / 100,
+                                                              wavelet=wavelet)
+            else:
+                rin, rout = st.sidebar.slider('band frequency radio', max_value=100., value=(10., 20.), step=.01)
+                img_back, (spectrum, mask) = detect_edges_wav(img, bpf,
+                                                              (rin * min(img.shape) / 100, rout * min(img.shape) / 100),
+                                                              wavelet=wavelet)
+            st.sidebar.image(image=np.uint8(spectrum), caption='After Analysis ', use_column_width=True)
+            st.sidebar.image(image=np.uint8(mask), caption='Coefficients + MASK', use_column_width=True)
+            st.image(image=np.uint8(img_back), caption='After Synthesis', use_column_width=True)
