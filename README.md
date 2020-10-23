@@ -1,9 +1,9 @@
 # University of Havana
 # Numerical Math Project
 ### Topic:
-Edge Detection and Noise Reduction in images using FFT
+Edge Detection and Noise Reduction in images using FFT and Wavelets
 ## Abstract:
-A numerical math class project to analyze the use of the fast fourier transform in image processing with the use of the data visualization tool Streamlit.
+A numerical math class project to analyze the use of the fast fourier transform and wavelets in image processing with the use of the data visualization tool Streamlit.
 ### Authors:
     Alejandro Klever Clemente
     Miguel Angel Gonzalez Calles

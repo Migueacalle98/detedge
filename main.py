@@ -15,7 +15,7 @@ if __name__ == '__main__':
         st.markdown("""
                 # Proyecto de Matematica Numerica
                 ## Tema:
-                    Deteccion de borde y eliminacion de ruidos en imagenes usando FFT
+                    Deteccion de borde y eliminacion de ruidos en imagenes usando FFT y Wavelets
                 ### Autores:
                     Alejandro Klever Clemente
                     Miguel Angel Gonzalez Calles
